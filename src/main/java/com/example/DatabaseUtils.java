@@ -18,6 +18,8 @@ public final class DatabaseUtils {
     private static final String check_user_has_mate = "SELECT mate FROM niuzi where qq=?";
     private static final String update_user_female = "UPDATE niuzi SET sex ='女' WHERE qq=?";
     private static final String update_user_mate = "UPDATE niuzi SET mate=? WHERE qq=?";
+
+    private static final String     delete_user_mate = "UPDATE niuzi SET mate=0 WHERE qq=?";
     private static final Connection connection;
 
     static {
@@ -119,5 +121,11 @@ public final class DatabaseUtils {
         preparedStatement.setLong(1, qq);
         ResultSet resultSet1 = preparedStatement.executeQuery();
         return resultSet1.getLong("mate");
+    }
+
+    public static void DeleteUserMate(long qq) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(delete_user_mate);
+        preparedStatement.setLong(1, qq);
+        preparedStatement.executeUpdate();
     }
 }

@@ -19,6 +19,7 @@ import java.util.Random;
 
 import static com.example.DatabaseUtils.*;
 import static com.example.QQrobot.*;
+import static com.example.TaskType.分手;
 import static com.example.TaskType.搞对象;
 
 public class MessageListener extends SimpleListenerHost {
@@ -33,8 +34,8 @@ public class MessageListener extends SimpleListenerHost {
         String message = event.getMessage().contentToString();
         Member sender = event.getSender();
         Group subject = event.getSubject();
-        if (message.equals("L")) {
-            subject.sendMessage("厉害");
+        if (message.contains("L")) {
+            subject.sendMessage(message.replace("L","厉害"));
             return;
         }
 
@@ -256,7 +257,7 @@ public class MessageListener extends SimpleListenerHost {
                 return;
             }
 
-            tasks.add(new Task(sender.getId(),搞对象,30,atUserQQ));
+            tasks.add(new Task(sender.getId(),搞对象,60,atUserQQ));
             subject.sendMessage("---== 对象系统 ===--\n" +
                     new At(atUserQQ).contentToString()+" 你好，"+new At(sender.getId()).contentToString()+"想跟你搞对象\n" +
                     "输入命令「处理请求 搞对象 同意/不同意」");
@@ -287,6 +288,27 @@ public class MessageListener extends SimpleListenerHost {
                     case "不同意":
                         subject.sendMessage("---== 对象系统 ===--\n" +
                                 new At(target)+" 对方没有同意你的请求");
+                        RemoveByTargetQQ(taskType,sender.getId());
+                        return;
+                    default:
+                        return;
+                }
+            }
+
+            if (taskType.equals(分手)) {
+                long target = getQQbyUser(分手, sender.getId());
+                switch (decision){
+                    case "同意":
+                        DeleteUserMate(sender.getId());
+                        DeleteUserMate(target);
+                        RemoveByTargetQQ(taskType,sender.getId());
+                        subject.sendMessage("---== 对象系统 ===--\n" +
+                                new At(target)+" 恭喜！！！！对方同意了你的请求");
+                        return;
+                    case "不同意":
+                        subject.sendMessage("---== 对象系统 ===--\n" +
+                                new At(target)+" 对方没有同意你的请求");
+                        RemoveByTargetQQ(taskType,sender.getId());
                         return;
                     default:
                         return;
@@ -353,6 +375,34 @@ public class MessageListener extends SimpleListenerHost {
                     "行行行 贴贴贴 一会儿粘上了加了 %f 厘米，但你俩已经虚了，所以你们得等 %d 小时 后才可以再次贴贴",i,hour));
             tietie_colddown_and_user.put(mate,hour);
             tietie_colddown_and_user.put(sender.getId(),hour);
+            return;
+        }
+
+        if (message.equals("我要分手")) {
+            if (!CheckUserExists(sender.getId())){
+                subject.sendMessage("---== 牛子系统 ==---\n" +
+                        "你没有牛子你在这你想干什么啊");
+                return;
+            }
+            if (!CheckUserHasMate(sender.getId())) {
+                subject.sendMessage("---== 对象系统 ===--\n" +
+                        "你没对象你分哪门子手？\n");
+                return;
+            }
+
+            long mate = QueryUserMate(sender.getId());
+
+            for (Task task : tasks) {
+                if (task.getTaskType().equals(分手)&&task.getTarget_qq()==mate){
+                    subject.sendMessage("---== 对象系统 ===--\n" +
+                            "已存在请求");
+                    return;
+                }
+            }
+            subject.sendMessage("---== 对象系统 ===--\n" +
+                    new At(mate)+" 你好，"+new At(sender.getId())+" 想跟你分手\n" +
+                    "输入命令「处理请求 分手 同意/不同意」");
+            tasks.add(new Task(sender.getId(),分手,60,mate));
             return;
         }
 
