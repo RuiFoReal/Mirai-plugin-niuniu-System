@@ -357,7 +357,7 @@ public class MessageListener extends SimpleListenerHost {
         }
 
 
-        System.out.println("-----------------");
+        System.out.println("----------------");
         // 无返回值, 表示一直监听事件
     }
 
