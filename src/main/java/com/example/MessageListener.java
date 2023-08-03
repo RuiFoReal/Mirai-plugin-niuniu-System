@@ -35,12 +35,29 @@ public class MessageListener extends SimpleListenerHost {
         Member sender = event.getSender();
         Group subject = event.getSubject();
         if (message.contains("L")) {
-            subject.sendMessage(message.replace("L","厉害"));
+            subject.sendMessage(message.replace("L", "厉害"));
+            return;
+        }
+
+        if (message.equals("纪狗爬")) {
+            subject.sendMessage("\uD83D\uDE2D回来吧纪狗爬\uD83D\uDE2D\n" +
+                    "\uD83C\uDF1F我最骄傲的信仰\uD83C\uDF1F\n" +
+                    "⚡️历历在目的loli get⚡️\n" +
+                    "\uD83D\uDE2D眼泪莫名在流淌\uD83D\uDE2D\n" +
+                    "\uD83D\uDCA5依稀记得搞对象\uD83D\uDCA5\n" +
+                    "\uD83D\uDC4D还有给力的贴贴！\uD83D\uDC4D\n" +
+                    "⚡️把牛牛都给打退⚡️\n" +
+                    "✨通宵熬夜都不累✨");
+            return;
+        }
+
+        if (message.equals("github")) {
+            subject.sendMessage("https://github.com/RuiFoReal/Mirai-plugin-niuniu-System");
             return;
         }
 
         if (message.equals("牛子系统")) {
-            subject.sendMessage("牛子养成系统(未开发完成)\n" +
+            subject.sendMessage("牛子养成系统(以下命令已开发完成)\n" +
                     "    命令：改牛子名 [要改的名字]  改你的牛子的名字,支持空格,最长10个字\n" +
                     "    命令：搞对象 [@对方]  和别人搞对象\n" +
                     "    命令：贴贴！   和对象贴贴！\n" +
@@ -52,9 +69,12 @@ public class MessageListener extends SimpleListenerHost {
                     "    命令：比划比划 [@对方]  比划一下，赢加长度输减长度，断掉双方都减长度\n" +
                     "    命令：群牛子排行   查看牛子排行榜(此命令意义不明 使用牛子榜替代)\n" +
                     "    命令：领养牛子   领养一只牛子\n" +
+                    "    命令：纪狗爬 \n" +
+                    "    命令：github 查看该插件开源地址 \n" +
                     "    命令：牛子榜   查看牛子排行榜");
             return;
         }
+
 
         if (message.equals("牛子榜")) {
             ResultSet resultSet1 = QueryAllData();
@@ -63,13 +83,13 @@ public class MessageListener extends SimpleListenerHost {
                 Member member = getMember(event.getGroup(), Long.parseLong(resultSet1.getString("qq")));
                 if (member == null) continue;
                 String name = member.getNameCard();
-                if(name.isEmpty()){
+                if (name.isEmpty()) {
                     messageBuilder.add(3076716686L, "mckLLL", new PlainText(String.format("%s[主人:(%s)]:%f厘米", resultSet1.getString("name"), member.getNick(), resultSet1.getFloat("long"))));
                     continue;
                 }
                 messageBuilder.add(3076716686L, "mckLLL", new PlainText(String.format("%s[主人:(%s)]:%f厘米", resultSet1.getString("name"), name, resultSet1.getFloat("long"))));
             }
-            if (messageBuilder.size()==0){
+            if (messageBuilder.size() == 0) {
                 return;
             }
             subject.sendMessage(messageBuilder.build());
@@ -83,7 +103,7 @@ public class MessageListener extends SimpleListenerHost {
                         "没有牛子你查什么查滚");
                 return;
             }
-            if (sender.getNameCard().isEmpty()){
+            if (sender.getNameCard().isEmpty()) {
                 subject.sendMessage(String.format("---== 牛子系统 ==---\n" +
                         "主人:%s\n" +
                         "名称:%s\n" +
@@ -106,7 +126,7 @@ public class MessageListener extends SimpleListenerHost {
                         "？你有了你还领，有病");
                 return;
             }
-            if (sender.getNameCard().isEmpty()){
+            if (sender.getNameCard().isEmpty()) {
                 InsertUser(sender.getId(), sender.getNick());
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "行了行了行了");
@@ -133,76 +153,75 @@ public class MessageListener extends SimpleListenerHost {
                         "你没有牛子你在这你想干什么啊");
                 return;
             }
-            UpdateUserName(sender.getId(),name);
+            UpdateUserName(sender.getId(), name);
             subject.sendMessage("---== 牛子系统 ==---\n" +
                     "行了行了行了");
             return;
         }
 
-        if (message.contains("比划比划")&&message.contains("@")) {
+        if (message.contains("比划比划") && message.contains("@")) {
             long atUserQQ = getAtUserQQ(message);
-            if (atUserQQ==-1){
+            if (atUserQQ == -1) {
                 return;
             }
-            if (atUserQQ==sender.getId()){
+            if (atUserQQ == sender.getId()) {
                 return;
             }
 
-            if (!CheckUserExists(sender.getId())){
+            if (!CheckUserExists(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你没有牛子你在这你想干什么啊");
                 return;
             }
 
-            if (!CheckUserExists(atUserQQ)){
+            if (!CheckUserExists(atUserQQ)) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "真可惜！你选的比划对象人家没有牛子");
                 return;
             }
             Member member = getMember(event.getGroup(), atUserQQ);
-            if (member==null){
+            if (member == null) {
                 return;
             }
             if (CheckUserCoolDownTimeByBiHua(sender.getId())) {
                 subject.sendMessage(String.format("---== 牛子系统 ==---\n" +
-                        "你牛子红肿了，等 %d 时。",QueryUserBiHuaCoolDownTime(sender.getId())));
+                        "你牛子红肿了，等 %d 时。", QueryUserBiHuaCoolDownTime(sender.getId())));
                 return;
             }
 
             if (CheckUserCoolDownTimeByBiHua(atUserQQ)) {
                 subject.sendMessage(String.format("---== 牛子系统 ==---\n" +
-                        "对方牛子红肿了，等 %d 时。",QueryUserBiHuaCoolDownTime(atUserQQ)));
+                        "对方牛子红肿了，等 %d 时。", QueryUserBiHuaCoolDownTime(atUserQQ)));
                 return;
             }
 
 
-
             Random random = new Random();
-            float damage = random.nextFloat()*1000;
-            if (random.nextInt(1000)>500){
-                UpdateLong(sender.getId(),damage,"+");
-                UpdateLong(atUserQQ,damage,"-");
+            float damage = random.nextFloat() * 1000;
+            if (random.nextInt(1000) > 500) {
+                UpdateLong(sender.getId(), damage, "+");
+                UpdateLong(atUserQQ, damage, "-");
                 subject.sendMessage(String.format("---== 牛子系统 ==---\n" +
-                        "%s和%s开始比划牛子，赢到了 %f 厘米。",sender.getNameCard(), member.getNameCard(),damage));
-            }else {
-                UpdateLong(sender.getId(),damage,"-");
-                UpdateLong(atUserQQ,damage,"+");
+                        "%s和%s开始比划牛子，赢到了 %f 厘米。", sender.getNameCard(), member.getNameCard(), damage));
+            } else {
+                UpdateLong(sender.getId(), damage, "-");
+                UpdateLong(atUserQQ, damage, "+");
                 subject.sendMessage(String.format("---== 牛子系统 ==---\n" +
-                        "%s和%s开始比划牛子，输了 %f 厘米。",sender.getNameCard(), member.getNameCard(),damage));
+                        "%s和%s开始比划牛子，输了 %f 厘米。", sender.getNameCard(), member.getNameCard(), damage));
             }
             int hour = random.nextInt(6);
-            bihua_colddown_and_user.put(atUserQQ,hour);
-            bihua_colddown_and_user.put(sender.getId(),hour);
+            bihua_colddown_and_user.put(atUserQQ, hour);
+            bihua_colddown_and_user.put(sender.getId(), hour);
             return;
         }
 
         if (message.equals("变女性")) {
-            if (!CheckUserExists(sender.getId())){
+            if (!CheckUserExists(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你没有牛子你在这你想干什么啊");
                 return;
             }
-            if (CheckUserIsFemale(sender.getId())){
+            if (CheckUserIsFemale(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你已经是女的了，怎么？");
                 return;
@@ -213,22 +232,22 @@ public class MessageListener extends SimpleListenerHost {
             return;
         }
 
-        if (message.contains("搞对象")&&message.contains("@")) {
+        if (message.contains("搞对象") && message.contains("@")) {
             long atUserQQ = getAtUserQQ(message);
-            if (atUserQQ==-1){
+            if (atUserQQ == -1) {
                 return;
             }
-            if (atUserQQ==sender.getId()){
+            if (atUserQQ == sender.getId()) {
                 return;
             }
 
-            if (!CheckUserExists(sender.getId())){
+            if (!CheckUserExists(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你没有牛子你在这你想干什么啊");
                 return;
             }
 
-            if (!CheckUserExists(atUserQQ)){
+            if (!CheckUserExists(atUserQQ)) {
                 subject.sendMessage("---== 对象系统 ===--\n" +
                         "真可惜!Ta没有牛子");
                 return;
@@ -246,49 +265,49 @@ public class MessageListener extends SimpleListenerHost {
                 return;
             }
             for (Task task : tasks) {
-                if (task.getTaskType().equals(搞对象)&&task.getTarget_qq()==atUserQQ){
+                if (task.getTaskType().equals(搞对象) && task.getTarget_qq() == atUserQQ) {
                     subject.sendMessage("---== 对象系统 ===--\n" +
                             "已存在请求，可能是别人发的");
                     return;
                 }
             }
             Member member = getMember(event.getGroup(), atUserQQ);
-            if (member==null){
+            if (member == null) {
                 return;
             }
 
-            tasks.add(new Task(sender.getId(),搞对象,60,atUserQQ));
+            tasks.add(new Task(sender.getId(), 搞对象, 60, atUserQQ));
             subject.sendMessage("---== 对象系统 ===--\n" +
-                    new At(atUserQQ).contentToString()+" 你好，"+new At(sender.getId()).contentToString()+"想跟你搞对象\n" +
+                    new At(atUserQQ).contentToString() + " 你好，" + new At(sender.getId()).contentToString() + "想跟你搞对象\n" +
                     "输入命令「处理请求 搞对象 同意/不同意」");
         }
 
         if (message.contains("处理请求")) {
             String[] strings = message.split(" ");
-            if (strings.length!=3) {
+            if (strings.length != 3) {
                 return;
             }
             TaskType taskType = TaskType.valueOf(strings[1]);
-            if (!CheckTaskExists(taskType,sender.getId())){
+            if (!CheckTaskExists(taskType, sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "没有待处理的请求");
                 return;
             }
-            String decision=strings[2];
+            String decision = strings[2];
             if (taskType.equals(搞对象)) {
                 long target = getQQbyUser(搞对象, sender.getId());
-                switch (decision){
+                switch (decision) {
                     case "同意":
-                        UpdateUserMate(sender.getId(),target);
-                        UpdateUserMate(target,sender.getId());
-                        RemoveByTargetQQ(taskType,sender.getId());
+                        UpdateUserMate(sender.getId(), target);
+                        UpdateUserMate(target, sender.getId());
+                        RemoveByTargetQQ(taskType, sender.getId());
                         subject.sendMessage("---== 对象系统 ===--\n" +
-                                new At(target)+" 恭喜！！！！对方同意了你的请求");
+                                new At(target) + " 恭喜！！！！对方同意了你的请求");
                         return;
                     case "不同意":
                         subject.sendMessage("---== 对象系统 ===--\n" +
-                                new At(target)+" 对方没有同意你的请求");
-                        RemoveByTargetQQ(taskType,sender.getId());
+                                new At(target) + " 对方没有同意你的请求");
+                        RemoveByTargetQQ(taskType, sender.getId());
                         return;
                     default:
                         return;
@@ -297,18 +316,18 @@ public class MessageListener extends SimpleListenerHost {
 
             if (taskType.equals(分手)) {
                 long target = getQQbyUser(分手, sender.getId());
-                switch (decision){
+                switch (decision) {
                     case "同意":
                         DeleteUserMate(sender.getId());
                         DeleteUserMate(target);
-                        RemoveByTargetQQ(taskType,sender.getId());
+                        RemoveByTargetQQ(taskType, sender.getId());
                         subject.sendMessage("---== 对象系统 ===--\n" +
-                                new At(target)+" 恭喜！！！！对方同意了你的请求");
+                                new At(target) + " 恭喜！！！！对方同意了你的请求");
                         return;
                     case "不同意":
                         subject.sendMessage("---== 对象系统 ===--\n" +
-                                new At(target)+" 对方没有同意你的请求");
-                        RemoveByTargetQQ(taskType,sender.getId());
+                                new At(target) + " 对方没有同意你的请求");
+                        RemoveByTargetQQ(taskType, sender.getId());
                         return;
                     default:
                         return;
@@ -330,7 +349,7 @@ public class MessageListener extends SimpleListenerHost {
             }
             long mate = QueryUserMate(sender.getId());
             ResultSet resultSet1 = QueryOneUserData(mate);
-            if (sender.getNameCard().isEmpty()){
+            if (sender.getNameCard().isEmpty()) {
                 subject.sendMessage(String.format("---== 对象系统 ==---\n" +
                         "你的对象：%s\n" +
                         "Ta的牛子：%s\n" +
@@ -349,7 +368,7 @@ public class MessageListener extends SimpleListenerHost {
         }
 
         if (message.equals("贴贴！")) {
-            if (!CheckUserExists(sender.getId())){
+            if (!CheckUserExists(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你没有牛子你在这你想干什么啊");
                 return;
@@ -360,26 +379,26 @@ public class MessageListener extends SimpleListenerHost {
                 return;
             }
             long mate = QueryUserMate(sender.getId());
-            if (CheckUserCoolDownTimeByTieTie(mate)||CheckUserCoolDownTimeByTieTie(sender.getId())) {
+            if (CheckUserCoolDownTimeByTieTie(mate) || CheckUserCoolDownTimeByTieTie(sender.getId())) {
                 subject.sendMessage(String.format("---== 对象系统 ===--\n" +
-                        "你俩能不能消停会儿 都粘掉皮了 等 %d 时 再贴",QueryUserTieTieCoolDownTime(mate)));
+                        "你俩能不能消停会儿 都粘掉皮了 等 %d 时 再贴", QueryUserTieTieCoolDownTime(mate)));
                 return;
             }
 
             Random random = new Random();
-            float i = random.nextFloat()*1000;
+            float i = random.nextFloat() * 1000;
             int hour = random.nextInt(6);
-            UpdateLong(sender.getId(),i,"+");
-            UpdateLong(mate,i,"+");
+            UpdateLong(sender.getId(), i, "+");
+            UpdateLong(mate, i, "+");
             subject.sendMessage(String.format("---== 对象系统 ==---\n" +
-                    "行行行 贴贴贴 一会儿粘上了加了 %f 厘米，但你俩已经虚了，所以你们得等 %d 小时 后才可以再次贴贴",i,hour));
-            tietie_colddown_and_user.put(mate,hour);
-            tietie_colddown_and_user.put(sender.getId(),hour);
+                    "行行行 贴贴贴 一会儿粘上了加了 %f 厘米，但你俩已经虚了，所以你们得等 %d 小时 后才可以再次贴贴", i, hour));
+            tietie_colddown_and_user.put(mate, hour);
+            tietie_colddown_and_user.put(sender.getId(), hour);
             return;
         }
 
         if (message.equals("我要分手")) {
-            if (!CheckUserExists(sender.getId())){
+            if (!CheckUserExists(sender.getId())) {
                 subject.sendMessage("---== 牛子系统 ==---\n" +
                         "你没有牛子你在这你想干什么啊");
                 return;
@@ -393,16 +412,16 @@ public class MessageListener extends SimpleListenerHost {
             long mate = QueryUserMate(sender.getId());
 
             for (Task task : tasks) {
-                if (task.getTaskType().equals(分手)&&task.getTarget_qq()==mate){
+                if (task.getTaskType().equals(分手) && task.getTarget_qq() == mate) {
                     subject.sendMessage("---== 对象系统 ===--\n" +
                             "已存在请求");
                     return;
                 }
             }
             subject.sendMessage("---== 对象系统 ===--\n" +
-                    new At(mate)+" 你好，"+new At(sender.getId())+" 想跟你分手\n" +
+                    new At(mate) + " 你好，" + new At(sender.getId()) + " 想跟你分手\n" +
                     "输入命令「处理请求 分手 同意/不同意」");
-            tasks.add(new Task(sender.getId(),分手,60,mate));
+            tasks.add(new Task(sender.getId(), 分手, 60, mate));
             return;
         }
 
@@ -431,47 +450,48 @@ public class MessageListener extends SimpleListenerHost {
         return null;
     }
 
-    public static boolean CheckTaskExists(TaskType taskType,long qq){
+    public static boolean CheckTaskExists(TaskType taskType, long qq) {
         for (Task task : tasks) {
-            if (task.getTaskType().equals(taskType)&&qq==task.getTarget_qq()){
+            if (task.getTaskType().equals(taskType) && qq == task.getTarget_qq()) {
                 return true;
             }
         }
         return false;
     }
 
-    public static long getQQbyUser(TaskType taskType,long qq){
+    public static long getQQbyUser(TaskType taskType, long qq) {
         for (Task task : tasks) {
-            if (task.getTaskType().equals(taskType)&&qq==task.getTarget_qq()){
+            if (task.getTaskType().equals(taskType) && qq == task.getTarget_qq()) {
                 return task.getUser_qq();
             }
         }
         return -1;
     }
 
-    public static void RemoveByTargetQQ(TaskType taskType,long qq) {
+    public static void RemoveByTargetQQ(TaskType taskType, long qq) {
         Iterator<Task> iterator = tasks.iterator();
         while (iterator.hasNext()) {
             Task task = iterator.next();
-            if (task.getTarget_qq()==qq&&task.getTaskType().equals(taskType)){
+            if (task.getTarget_qq() == qq && task.getTaskType().equals(taskType)) {
                 iterator.remove();
                 return;
             }
         }
     }
-    public static boolean CheckUserCoolDownTimeByTieTie(long qq){
+
+    public static boolean CheckUserCoolDownTimeByTieTie(long qq) {
         return tietie_colddown_and_user.containsKey(qq);
     }
 
-    public static int QueryUserTieTieCoolDownTime(long qq){
+    public static int QueryUserTieTieCoolDownTime(long qq) {
         return tietie_colddown_and_user.get(qq);
     }
 
-    public static boolean CheckUserCoolDownTimeByBiHua(long qq){
+    public static boolean CheckUserCoolDownTimeByBiHua(long qq) {
         return bihua_colddown_and_user.containsKey(qq);
     }
 
-    public static int QueryUserBiHuaCoolDownTime(long qq){
+    public static int QueryUserBiHuaCoolDownTime(long qq) {
         return bihua_colddown_and_user.get(qq);
     }
 }

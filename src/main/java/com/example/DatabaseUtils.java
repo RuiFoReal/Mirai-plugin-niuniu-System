@@ -19,7 +19,7 @@ public final class DatabaseUtils {
     private static final String update_user_female = "UPDATE niuzi SET sex ='女' WHERE qq=?";
     private static final String update_user_mate = "UPDATE niuzi SET mate=? WHERE qq=?";
 
-    private static final String     delete_user_mate = "UPDATE niuzi SET mate=0 WHERE qq=?";
+    private static final String delete_user_mate = "UPDATE niuzi SET mate=0 WHERE qq=?";
     private static final Connection connection;
 
     static {
@@ -63,22 +63,22 @@ public final class DatabaseUtils {
     public static void InsertUser(long qq, String name) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(insert_user);
         preparedStatement.setLong(1, qq);
-        preparedStatement.setFloat(2, new Random().nextFloat()*1000);
+        preparedStatement.setFloat(2, new Random().nextFloat() * 1000);
         preparedStatement.setString(3, name);
         preparedStatement.executeUpdate();
     }
 
-    public static void UpdateUserName(long qq,String name) throws SQLException {
+    public static void UpdateUserName(long qq, String name) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(update_username);
         preparedStatement.setString(1, name);
         preparedStatement.setLong(2, qq);
         preparedStatement.executeUpdate();
     }
 
-    public static void UpdateLong(long qq,float damage,String symbol) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE niuzi SET long=long"+symbol+"? WHERE qq=?");
+    public static void UpdateLong(long qq, float damage, String symbol) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE niuzi SET long=long" + symbol + "? WHERE qq=?");
         preparedStatement.setFloat(1, damage);
-        preparedStatement.setLong(2,qq);
+        preparedStatement.setLong(2, qq);
         preparedStatement.executeUpdate();
     }
 
@@ -96,7 +96,7 @@ public final class DatabaseUtils {
         PreparedStatement preparedStatement = connection.prepareStatement(update_user_female);
         preparedStatement.setLong(1, qq);
         preparedStatement.executeUpdate();
-        UpdateLong(qq,50,"-");
+        UpdateLong(qq, 50, "-");
     }
 
     public static boolean CheckUserHasMate(long qq) throws SQLException {
@@ -109,7 +109,7 @@ public final class DatabaseUtils {
         return mate != 0;
     }
 
-    public static void UpdateUserMate(long qq,long mate) throws SQLException {
+    public static void UpdateUserMate(long qq, long mate) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(update_user_mate);
         preparedStatement.setLong(1, mate);
         preparedStatement.setLong(2, qq);
